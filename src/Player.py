@@ -1,4 +1,5 @@
 import copy
+import random 
 
 class Player:
     def __init__(self, label, name, strategy):
@@ -90,3 +91,27 @@ class Player:
         strategy and current state of the board.
         """
         return self.strategy(self, game)
+
+    def Random_Player(self,player, game):
+        """
+        Algorithm for random play, stop search when it finds first possible move
+        """
+        shape_options = [p for p in player.pieces]
+        
+        while len(shape_options) > 0:
+            piece = random.choice(shape_options)
+            possibles = player.possible_moves([piece], game)
+        
+            # if there are not possible placements for that piece,
+            # remove the piece from out list of pieces
+            if possibles != []:
+                return random.choice(possibles)
+            
+            else: shape_options.remove(piece)
+        
+        # if the while loop finishes without returning a possible move,
+        # there must be no possible moves left, return None
+        return None
+        
+    def do_random_move(self,game):
+        return self.Random_Player(self, game)
