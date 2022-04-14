@@ -7,8 +7,8 @@ from math import sqrt, log
 import random
 import copy
 
-board_size = 10
-num_pieces = 8
+board_size = 5
+num_pieces = 4
 
 All_Shapes = ([I1(), I2(), I3(), I4(), I5(), 
               V3(), L4(), Z4(), O4(), L5(), 
@@ -62,7 +62,7 @@ def UCT_Player(player,game):
     def add (game):
         MaxLegalMoves = 1000
         nplayouts = [0.0 for x in range (MaxLegalMoves)]
-        nwins = [0.0 for x in range (MaxLegalMoves)]
+        nwins = [[0.0,0.0,0.0,0.0] for x in range (MaxLegalMoves)]
         Table [game.h] = [0, nplayouts, nwins]
     
     def look (game):
@@ -83,14 +83,10 @@ def UCT_Player(player,game):
             shape_options = [p for p in current.pieces]
             moves = current.possible_moves(shape_options, game) 
 
-
-
             for i in range (0, len (moves)):
                 val = 1000000.0
                 if t [1] [i] > 0:
-                    Q = t[2][i] / t[1][i]
-                    #if board.turn == Black:
-                        #Q = 1 - Q
+                    Q = t[2][i][current.idx] / t[1][i]
                     val = Q + 0.4 * sqrt (log(t[0]) / t[1][i])
                 if val > bestValue:
                     bestValue = val
@@ -98,7 +94,6 @@ def UCT_Player(player,game):
 
 
             if len (moves) == 0 :
-                #game.play_move(None)
                 add (game)
                 return game.playout().idx
 
@@ -106,14 +101,10 @@ def UCT_Player(player,game):
                 game.play_move (moves[best])
             
             res = UCT (game)
-            if res == current.idx:
-                res = 1
-            else:
-                res = 0
 
             t [0] += 1
             t [1] [best] += 1
-            t [2] [best] += res
+            t [2] [best][res] += 1
             return res
         else:
             add (game)
@@ -138,6 +129,7 @@ def UCT_Player(player,game):
 
             best = moves [0]
             bestValue = t [1] [0]
+            print(t[1])
             for i in range (1, len(moves)):
                 if (t [1] [i] > bestValue):
                     bestValue = t [1] [i]
@@ -155,9 +147,6 @@ d_player = Player("D", "Player_D", Random_Player,3)
 standard_size = Board(board_size, board_size, "_")
 
 randomblokus = Blokus([a_player, b_player,c_player,d_player], standard_size, All_Shapes[:num_pieces])
-
-#winner = randomblokus.playout()
-#print(winner)
 
 randomblokus.play()
 randomblokus.board.print_board(num = randomblokus.rounds, fancy = False)
