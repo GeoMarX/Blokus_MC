@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 
 class Game:
     """
@@ -12,7 +13,21 @@ class Game:
         self.rounds = 0
         self.board = board
         self.all_pieces = all_pieces
-        
+        self.h = 0
+    
+        hashTable = dict()
+
+        for k in range(4): # 4 players
+            l = []
+            for i in range (self.board.size[0]):
+                l1 = []
+                for j in range (self.board.size[0]):
+                    l1.append (random.randint (0, 2 ** 64))
+                l.append (l1)
+            hashTable[k] = deepcopy(l)
+            
+        self.hashTable = hashTable
+
     def winner(self):
         """
         Checks the conditions of the game
@@ -35,7 +50,7 @@ class Game:
         Plays a list of Player objects sequentially,
         as long as the game has not been won yet,
         starting with the first player in the list at
-        instantiation.
+        instantiation.  
         """
         if self.rounds == 0:
             # When the game has not begun yet, the game must
@@ -74,6 +89,9 @@ class Game:
                 # remove the piece that was played from the player
                 current.remove_piece(proposal)
                 # place the player at the back of the queue
+                
+                self.h = self.h ^ self.get_hash(proposal,current.idx)
+
                 first = (self.players).pop(0)
                 self.players = self.players + [first]
                 # increment the number of rounds just played
@@ -83,10 +101,15 @@ class Game:
             else: raise Exception("Invalid move by " + current.name + ".")
         
         else:
-            print ("Game over! And the winner is: " + self.winner())
-    
-    def random_play(self):
+            print ("Game over! And the winner is: " + self.winner().name)
 
+    def play_move(self,move,random=False):
+        """
+        Plays a list of Player objects sequentially,
+        as long as the game has not been won yet,
+        starting with the first player in the list at
+        instantiation.  
+        """
         if self.rounds == 0:
             # When the game has not begun yet, the game must
             # give the players their pieces and a corner to start.
@@ -98,22 +121,16 @@ class Game:
                 (self.players[i]).add_pieces(self.all_pieces)
                 (self.players[i]).start_corner(starts[i])
         
-
+        # if there is no winner, print out the current player's name and
+        # let current player perform a move
         if self.winner() == "None":
             current = self.players[0]
             #print ("Current player: " + current.name)
+            if random:
+                proposal = current.do_random_move(self)    
+            else:
+                proposal = move
             
-            shape_options = [p for p in current.pieces]
-            moves = current.possible_moves(shape_options, self) 
-            if moves is None:
-                return None
-            if len(moves) == 0:
-                return None
-            print(len(moves))
-            proposal =  random.choice(moves)
-
-
-            #proposal = current.do_move(self)
             if proposal == None:
                 # move on to next player, increment rounds
                 first = (self.players).pop(0)
@@ -130,6 +147,9 @@ class Game:
                 # remove the piece that was played from the player
                 current.remove_piece(proposal)
                 # place the player at the back of the queue
+                
+                self.h = self.h ^ self.get_hash(proposal,current.idx)
+
                 first = (self.players).pop(0)
                 self.players = self.players + [first]
                 # increment the number of rounds just played
@@ -138,17 +158,28 @@ class Game:
             # interrupts the game if an invalid move is proposed
             else: raise Exception("Invalid move by " + current.name + ".")
         
+        else:
+            print ("Game over! And the winner is: " + self.winner())
+    
+    def get_hash(self,prop,idx):
+        
+        h = 0
+        for point in prop.points:
+            h += self.hashTable[idx][point[0]][point[1]]
+        return h 
+  
     def playout(self):
-        self.play(random=True)
 
+        self.play(random=True)
         while self.winner() == "None":
             self.play(random=True)
 
+        # print("The final scores are...")
 
-        print("The final scores are...")
+        # by_name = sorted(self.players, key = lambda player: player.name)
 
-        by_name = sorted(self.players, key = lambda player: player.name)
-
-        for p in by_name:
-            print (p.name + " : " + str(p.score))
+        # for p in by_name:
+        #     print (p.name + " : " + str(p.score))
+        
+        
         return self.winner()

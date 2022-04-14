@@ -2,13 +2,14 @@ import copy
 import random 
 
 class Player:
-    def __init__(self, label, name, strategy):
+    def __init__(self, label, name, strategy,idx):
         self.label = label
         self.name = name
         self.pieces = []
         self.corners = set()
         self.strategy = strategy
         self.score = 0
+        self.idx = idx
         
     def add_pieces(self, pieces):
         """

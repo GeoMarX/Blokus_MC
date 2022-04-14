@@ -20,9 +20,9 @@ class Blokus(Game):
         if False in [mv == [] for mv in moves]:
             return("None")
         else:
-            cand = [(p.score, p.name) for p in self.players]
-            return(sorted(cand, reverse=True)[0][1])
-        
+            cand = [(p.score, p.name,p) for p in self.players]
+            #return(sorted(cand, reverse=True)[0][1])
+            return(sorted(cand, reverse=True)[0][2])
     def valid_move(self, player, move):
         """
         Uses functions from the board to see whether
