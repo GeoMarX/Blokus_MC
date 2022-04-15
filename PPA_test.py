@@ -115,37 +115,38 @@ def nested_player(player, game):
             return game.playout().idx
 
 def UCT (game):
-        def add (game):
-            MaxLegalMoves = 1000
-            nplayouts = [0.0 for x in range (MaxLegalMoves)]
-            nwins = [[0.0,0.0,0.0,0.0] for x in range (MaxLegalMoves)]
-            Table [game.h] = [0, nplayouts, nwins]
+    Table = {}
+    def add (game):
+        MaxLegalMoves = 1000
+        nplayouts = [0.0 for x in range (MaxLegalMoves)]
+        nwins = [[0.0,0.0,0.0,0.0] for x in range (MaxLegalMoves)]
+        Table [game.h] = [0, nplayouts, nwins]
 
-        def look (game):
-            return Table.get (game.h, None)
+    def look (game):
+        return Table.get (game.h, None)
+
+    if game.winner() != "None":
+        return game.winner().idx
     
-        if game.winner() != "None":
-            return game.winner().idx
+    t = look (game)
+    
+    if t != None:
+        bestValue = -1000000.0
+        best = 0
         
-        t = look (game)
-        
-        if t != None:
-            bestValue = -1000000.0
-            best = 0
-            
-            #moves = game.legalMoves()
-            current = game.players[0]
-            shape_options = [p for p in current.pieces]
-            moves = current.possible_moves(shape_options, game) 
+        #moves = game.legalMoves()
+        current = game.players[0]
+        shape_options = [p for p in current.pieces]
+        moves = current.possible_moves(shape_options, game) 
 
-            for i in range (0, len (moves)):
-                val = 1000000.0
-                if t [1] [i] > 0:
-                    Q = t[2][i][current.idx] / t[1][i]
-                    val = Q + 0.4 * sqrt (log(t[0]) / t[1][i])
-                if val > bestValue:
-                    bestValue = val
-                    best = i
+        for i in range (0, len (moves)):
+            val = 1000000.0
+            if t [1] [i] > 0:
+                Q = t[2][i][current.idx] / t[1][i]
+                val = Q + 0.4 * sqrt (log(t[0]) / t[1][i])
+            if val > bestValue:
+                bestValue = val
+                best = i
 
 
             if len (moves) == 0 :
@@ -190,6 +191,7 @@ def adapt(winner, game, player, playout, policy):
         game.players = game.players + [first]
         # increment the number of rounds just played
         game.rounds += 1
+    policy = polp
 
 def PPA_playout(game,policy):
     """
@@ -234,7 +236,7 @@ def PPA_Player(player,game):
         current_g = copy.deepcopy(game)
         winner = UCT(current_g)
         current_g1 = copy.deepcopy(game)
-        adapt(winner,current_g1,player,b.playout,policy)
+        adapt(winner, current_g1, player, current_g.playout, policy)
 
     return max(policy, key=policy.get)
 
@@ -325,20 +327,6 @@ def UCT_Player(player,game):
             return best
         
     return BestMoveUCT(game,n)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
