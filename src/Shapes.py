@@ -124,6 +124,17 @@ class Shape(object):
 
                 self.corners = list(map(flip_h, self.corners))
 
+    # def __eq__(self,other = None):
+    #     if self is not None and other is not None :
+    #         return ((self.points, self.corners) ==
+    #                 (other.points, other.corners))
+    #     else:
+    #         return True
+
+    def __lt__(self, other):
+        return ((self.points, self.corners) <
+                (other.points, other.corners))
+
 class I1(Shape):
     def __init__(self):
         self.ID = "I1"

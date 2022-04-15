@@ -102,7 +102,8 @@ class Game:
             else: raise Exception("Invalid move by " + current.name + ".")
         
         else:
-            print ("Game over! And the winner is: " + self.winner().name)
+            pass
+            #print ("Game over! And the winner is: " + self.winner().name)
     
     def play_AMAF(self,random=False):
 
@@ -144,7 +145,8 @@ class Game:
             else: raise Exception("Invalid move by " + current.name + ".")
         
         else:
-            print ("Game over! And the winner is: " + self.winner().name)
+            pass
+            #print ("Game over! And the winner is: " + self.winner().name)
 
             return proposal
 
@@ -208,7 +210,8 @@ class Game:
             else: raise Exception("Invalid move by " + current.name + ".")
         
         else:
-            print ("Game over! And the winner is: " + self.winner())
+            pass
+            #print ("Game over! And the winner is: " + self.winner())
     
     def get_hash(self,prop,idx):
         

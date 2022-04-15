@@ -190,15 +190,11 @@ def Random_Player(player, game):
         piece = random.choice(shape_options)
         possibles = player.possible_moves([piece], game)
     
-        # if there are not possible placements for that piece,
-        # remove the piece from out list of pieces
         if possibles != []:
             return random.choice(possibles)
         
         else: shape_options.remove(piece)
     
-    # if the while loop finishes without returning a possible move,
-    # there must be no possible moves left, return None
     return None
 
 def RAVE_Player(player,game):

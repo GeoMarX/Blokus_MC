@@ -14,14 +14,11 @@ class Blokus(Game):
         not been won, and the name of the
         player if it has been won.
         """
-        # Credit to Dariusz Walczak for inspiration.
-        # http://stackoverflow.com/questions/1720421/merge-two-lists-in-python
         moves = [p.possible_moves(p.pieces, self) for p in self.players]
         if False in [mv == [] for mv in moves]:
             return("None")
         else:
             cand = [(p.score, p.name,p) for p in self.players]
-            #return(sorted(cand, reverse=True)[0][1])
             return(sorted(cand, reverse=True)[0][2])
     def valid_move(self, player, move):
         """
