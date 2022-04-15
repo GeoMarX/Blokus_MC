@@ -187,6 +187,7 @@ def adapt(winner, game, player, playout, policy):
         # remove the piece that was played from the player
         current.remove_piece(m)
         # place the player at the back of the queue
+        game.history.append(m)
         first = (game.players).pop(0)
         game.players = game.players + [first]
         # increment the number of rounds just played

@@ -14,7 +14,7 @@ class Game:
         self.board = board
         self.all_pieces = all_pieces
         self.h = 0
-    
+        self.history = []
         hashTable = dict()
 
         for k in range(4): # 4 players
@@ -91,7 +91,7 @@ class Game:
                 # place the player at the back of the queue
                 
                 self.h = self.h ^ self.get_hash(proposal,current.idx)
-
+                self.history.append(move)
                 first = (self.players).pop(0)
                 self.players = self.players + [first]
                 # increment the number of rounds just played
@@ -152,6 +152,7 @@ class Game:
 
                 first = (self.players).pop(0)
                 self.players = self.players + [first]
+                self.history.append(move)
                 # increment the number of rounds just played
                 self.rounds += 1
             
